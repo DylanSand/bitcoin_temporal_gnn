@@ -1,5 +1,6 @@
-import numpy as np
 import pandas
+import torch
+from torch import Tensor
 
 class BitcoinLoader:  
     def __init__(
@@ -22,6 +23,11 @@ class BitcoinLoader:
             return temp_list.index(value)
         self.dataset['source'] = self.dataset['source'].apply(lambda x: x - return_list_spot(missing_ids, x))
         self.dataset['target'] = self.dataset['target'].apply(lambda x: x - return_list_spot(missing_ids, x))
+    
+    def get_full_edge_index(self) -> Tensor:
+        src = torch.tensor(self.dataset['source'], dtype=torch.int64)
+        tgt = torch.tensor(self.dataset['target'], dtype=torch.int64)
+        return torch.stack([src, tgt])
 
     @property
     def cols(self):
